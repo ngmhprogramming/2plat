@@ -1,4 +1,4 @@
-let level1screen = [
+var level1Screen = [
 	["B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B"],
 	["B", "A", "A", "A", "A", "D", "C", "A", "A", "A", "A", "B"],
 	["B", "A", "A", "A", "A", "B", "B", "A", "A", "A", "A", "B"],
@@ -18,7 +18,7 @@ var screen = [
 	["B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B"]
 ];
 
-var selectedScreen = screen.concat();
+var selectedScreen = screen;
 
 var player = {
 	posX: 0,
@@ -124,7 +124,7 @@ document.onkeydown = function(event){
 	updateScreen(screen, 100, 100);
 }
 
-screen = level1screen.concat();
-selectedScreen = level1screen.concat();
+screen = level1Screen;
+selectedScreen = level1Screen;
 updateScreen(screen, 100, 100);
 ready(screen);
