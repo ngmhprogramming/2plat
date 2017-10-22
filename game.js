@@ -1,4 +1,4 @@
-var level1screen = [
+let level1screen = [
 	["B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B"],
 	["B", "A", "A", "A", "A", "D", "C", "A", "A", "A", "A", "B"],
 	["B", "A", "A", "A", "A", "B", "B", "A", "A", "A", "A", "B"],
@@ -17,6 +17,8 @@ var screen = [
 	["B", "C", "C", "C", "C", "C", "A", "A", "C", "A", "A", "B"],
 	["B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B"]
 ];
+
+var selectedScreen = screen.concat();
 
 var player = {
 	posX: 0,
@@ -38,14 +40,15 @@ var textures = {
 	C: "gold",
 	D: "black",
 	E: "green",
+	P: "white"
 };
 
 function ready(screen){
 	var start = [];
 	for(i in screen){
 		if(screen[i].includes("E")){
-			start[0] = parseInt(i);
-			start[1] = screen[i].indexOf("E");
+			start[0] = screen[i].indexOf("E");
+			start[1] = parseInt(i);
 		}
 	}
 	if(start.length == 0){
@@ -54,6 +57,7 @@ function ready(screen){
 	}
 	player.posX = start[0];
 	player.posY = start[1];
+	screen[player.posY][player.posX] = "P";
 }
 
 function updateScreen(screen, pixelWidth, pixelHeight){
@@ -74,7 +78,6 @@ function updateScreen(screen, pixelWidth, pixelHeight){
 		x = 0;
 		y += pixelHeight;
 	}
-	console.log(canvas.width, canvas.height);
 	if(!player.movement){
 		context.font = "32px Arial";
 		context.fillText("Paused. P to resume.", 450, 350);
@@ -82,27 +85,46 @@ function updateScreen(screen, pixelWidth, pixelHeight){
 	}
 }
 
-function handleKey(keycode){
-	if(keycode == 87 || keycode == 38 || keycode == 32){
-		a = "a";
-	} else if(keycode == 83 || keycode == 40){
-		a = "a";
-	} else if(keycode == 65 || keycode == 37){
-		a = "a";
-	} else if(keycode == 68 || keycode == 39){
-		a = "a";
-	} else if(keycode == 112){
+document.onkeydown = function(event){
+	event = event || window.event;
+	if(player.movement && (event.keyCode == 87 || event.keyCode == 38 || event.keyCode == 32)){
+		event.preventDefault();
+		console.log(selectedScreen[player.posY][player.posX]);
+		screen[player.posY][player.posX] = selectedScreen[player.posY][player.posX];
+		if(screen[player.posY - 1] != "B"){
+			player.posY -= 1;
+			alert("JUMP");
+		}
+	} else if(player.movement && (event.keyCode == 83 || event.keyCode == 40)){
+		event.preventDefault();
+		screen[player.posY][player.posX] = selectedScreen[player.posY][player.posX];
+		if(screen[player.posY + 1] != "B"){
+			player.posY += 1;
+			alert("DUCK");
+		}
+	} else if(player.movement && (event.keyCode == 65 || event.keyCode == 37)){
+		event.preventDefault();
+		screen[player.posY][player.posX] = selectedScreen[player.posY][player.posX];
+		if(screen[player.posX - 1] != "B"){
+			player.posX -= 1;
+			alert("LEFT");
+		}
+	} else if(player.movement && (event.keyCode == 68 || event.keyCode == 39)){
+		event.preventDefault();
+		screen[player.posY][player.posX] = selectedScreen[player.posY][player.posX];
+		if(screen[player.posX + 1] != "B"){
+			player.posX += 1;
+			alert("RIGHT");
+		}
+	} else if(event.keyCode == 80){
 		player.movement = !player.movement;
 	}
-	console.log(keycode);
+	screen[player.posY][player.posX] = "P";
+	console.log(event.keyCode);
 	updateScreen(screen, 100, 100);
 }
 
-document.onkeypress = function(event){
-	event = event || window.event;
-	handleKey(event.keyCode); 
-}
-
-screen = level1screen;
+screen = level1screen.concat();
+selectedScreen = level1screen.concat();
 updateScreen(screen, 100, 100);
 ready(screen);
